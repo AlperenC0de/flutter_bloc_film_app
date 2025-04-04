@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_9/data/entity/films.dart';
+import 'package:flutter_application_9/ui/cubit/mainPage_cubit.dart';
 import 'package:flutter_application_9/ui/views/detailPage.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Mainpage extends StatefulWidget {
   const Mainpage({super.key});
@@ -11,37 +13,23 @@ class Mainpage extends StatefulWidget {
 
 class _MainpageState extends State<Mainpage> {
 
-  Future<List<Film>> uploadFilm() async {
-      var filmsList = <Film>[];
-      var f1 = Film(id: 1, name: "Django", picture: "django.png", price: 24);
-      var f2 = Film(id: 2, name: "Interstellar", picture: "interstellar.png", price: 32);
-      var f3 = Film(id: 3, name: "Inception", picture: "inception.png", price: 16);
-      var f4 = Film(id: 4, name: "The Hateful Eight", picture: "thehatefuleight.png", price: 28);
-      var f5 = Film(id: 5, name: "The Pianist", picture: "thepianist.png", price: 18);
-      var f6 = Film(id: 6, name: "Anadoluda", picture: "anadoluda.png", price: 10);
-      filmsList.add(f1);
-      filmsList.add(f2);
-      filmsList.add(f3);
-      filmsList.add(f4);
-      filmsList.add(f5);
-      filmsList.add(f6);
-      return filmsList;
- }
 
-
+@override
+  void initState() {
+    context.read<MainpageCubit>().uploadFilm();
+    super.initState();
+  }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Film List"),),
-      body: FutureBuilder<List<Film>>(
-        future: uploadFilm(), 
-        builder: (context,snapshot){
-          if(snapshot.hasData){
-            var filmsList=snapshot.data;
+      body: BlocBuilder<MainpageCubit,List<Film>>(
+        builder: (context,filmsList){
+          if(filmsList.isNotEmpty){
             return GridView.builder(
-              itemCount: filmsList!.length,
+              itemCount: filmsList.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1/1.8),
               itemBuilder: (context, index) {
                 var film=filmsList[index];
